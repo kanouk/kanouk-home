@@ -71,7 +71,7 @@
     text-transform: uppercase;
     color: var(--faint);
   }
-  h2 svg { width: 0.9rem; height: 0.9rem; fill: var(--faint); }
+  h2 svg { width: 14px; height: 14px; fill: var(--faint); }
 
   .icons {
     display: flex;
@@ -80,13 +80,15 @@
     gap: 1.25rem;
     margin-top: 1.1rem;
   }
-  .icons a, li a.icon-link { display: inline-flex; padding: 0.1rem; }
+  .icons a, li a.icon-link { display: inline-flex; padding: 2px; }
   .icons svg, li svg {
-    width: 1.3rem; height: 1.3rem;
+    width: 20px; height: 20px;
+    flex-shrink: 0;
+    overflow: visible;
     fill: var(--icon);
     transition: fill 0.18s ease, transform 0.18s ease;
   }
-  li svg { width: 1.15rem; height: 1.15rem; }
+  li svg { width: 18px; height: 18px; }
   .icons a:hover svg, li a.icon-link:hover svg { transform: translateY(-1px); }
   a.i-blog:hover svg      { fill: var(--link); }
   a.i-github:hover svg    { fill: var(--c-github); }
