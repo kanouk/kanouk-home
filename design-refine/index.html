@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="既存デザインを壊さずに磨き上げるための、AI向けデザインリファインプロンプト。">
+<title>デザインリファインプロンプト</title>
+<link rel="icon" type="image/svg+xml" href="/avatar.svg">
+<link rel="icon" type="image/png" href="/avatar.png">
+<style>
+  :root {
+    --bg: #fafaf8;
+    --bg-subtle: #f1f1ee;
+    --fg: #1d1d1f;
+    --muted: #86868b;
+    --faint: #a8a8ad;
+    --link: #3b5bd6;
+    --border: #e4e4e0;
+    --btn-bg: #1d1d1f;
+    --btn-fg: #fafaf8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111113;
+      --bg-subtle: #1a1a1d;
+      --fg: #e8e8e6;
+      --muted: #86868b;
+      --faint: #6a6a6e;
+      --link: #8fabff;
+      --border: #2a2a2e;
+      --btn-bg: #e8e8e6;
+      --btn-fg: #111113;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    font-feature-settings: "palt";
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.85;
+    padding: 4.5rem 1.5rem 5rem;
+  }
+  main { max-width: 42rem; margin: 0 auto; }
+  .home {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+  }
+  .home img { width: 20px; height: 20px; border-radius: 50%; }
+  .home:hover { color: var(--fg); }
+  h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0.015em; margin-top: 2.2rem; }
+  .desc { color: var(--muted); font-size: 0.92rem; margin-top: 0.5rem; max-width: 36rem; }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.2rem;
+  }
+  .meta { color: var(--faint); font-size: 0.8rem; }
+  button {
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--btn-fg);
+    background: var(--btn-bg);
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 1.1rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+  button:hover { opacity: 0.85; }
+  button:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+  pre {
+    margin-top: 1rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.6rem 1.7rem;
+    overflow-x: auto;
+    font-family: "SF Mono", SFMono-Regular, Menlo, Consolas, "Hiragino Sans", monospace;
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: var(--fg);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  @media (max-width: 600px) {
+    body { padding: 3rem 1.2rem 4rem; }
+    pre { padding: 1.2rem 1.1rem; font-size: 0.76rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <a class="home" href="/"><img src="/avatar.svg" alt="">kanouk.com</a>
+
+  <h1>デザインリファインプロンプト</h1>
+  <p class="desc">既存のWebアプリ・サイトのデザインを、別物にせず「今あるデザインの最良のバージョン」へ磨き上げるためのAI向けプロンプト。<code>{対象}</code> の部分を書き換えて使う。</p>
+
+  <div class="bar">
+    <span class="meta" id="meta"></span>
+    <button id="copy" type="button">プロンプトをコピー</button>
+  </div>
+
+  <pre id="prompt">あなたは世界最高水準のプロダクトデザイナー兼フロントエンドエンジニアです。
+Dieter Ramsの「Less, but better」、AppleのHuman Interface Guidelines、
+Stripe・Linear・Vercelに代表される現代のWebプロダクトデザインの規律を体得し、
+デザイントークンに基づくデザインシステムの設計・実装に精通しています。
+
+これから {対象:例「このWebアプリ全体」} のデザインをリファインしてください。
+これは「リデザイン」ではなく「リファイン」です。別物にするのではなく、
+今あるデザインの意図を汲み取り、その最良のバージョンに磨き上げてください。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ 変えないもの(トンマナの維持)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- ブランドカラー、ロゴ、フォントファミリー、言葉づかい
+- サービスの世界観・雰囲気・個性
+- ユーザーが既に学習している主要な操作導線と情報構造(URL・ページ構成)
+
+■ 変えてよいもの
+- レイアウト、余白、整列、要素のサイズと配置
+- 情報の順序・グルーピング・階層
+- HTML構造とCSSの書き方(見た目の意図を保ったままの再実装)
+- 装飾の量(原則として減らす方向のみ)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ デザインの原則
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. 視覚的階層: 各画面で「最も重要な要素」を1つ決め、それが0.5秒で目に入るようにする。
+   重要度が同じに見える要素が並んでいたら、それは階層設計の失敗とみなす。
+2. 余白は要素である: 区切り線や枠で分ける前に、まず余白で分ける。
+   余白の大小だけでグルーピングが伝わる状態を目指す(近接の原則)。
+   関連の強い要素間の余白 &lt; 関連の弱い要素間の余白、を全箇所で成立させる。
+3. スペーシングの体系化: 余白・サイズは4pxまたは8pxの倍数スケールに統一し、
+   場当たり的な値(13px、22pxなど)を排除する。
+4. タイポグラフィの節制: フォントサイズは1画面あたり最大4段階、ウェイトは2〜3種まで。
+   本文はfont-size 15〜16px・line-height 1.5〜1.7、見出しは1.2〜1.35。
+   本文の1行は全角35字(max-width: 65ch程度)までに抑える。
+5. 整列: すべての要素がグリッドに吸着していること。左揃えを基本とし、混在させない。
+   数値は右揃え(表内)、アイコンとテキストは光学的に中央揃え。
+6. 色の役割分担: アクセントカラーは最重要アクション1種類に限定し、
+   情報の主従はグレースケールの階調で表現する。テキストの色は
+   「主要・補助・無効」の3階調まで。背景とのコントラスト比はWCAG AA(4.5:1)以上。
+   赤の使用はエラー表示だけに限定する。
+7. 引き算の規律: 「これを消したら何が失われるか」に答えられない
+   装飾・線・影・背景色はすべて削除する。影は1〜2段階の定義に統一する。
+8. 一貫性: 同じ意味のものは同じ見た目に。角丸・影・ボタン高さ・
+   フォーム部品の寸法を全画面で統一する。
+
+■ 垂直リズム
+- ページを縦に貫く余白のリズムを決める: セクション間・見出しと本文・段落間
+  それぞれに使うトークンを1つに固定し、全ページで統一する。
+- ページ全体を縮小表示したとき、余白のリズムが等間隔の「拍」として見えること。
+
+■ 光学調整(スケールの唯一の例外)
+- 数値上の中央と目に見える中央が食い違う箇所(三角形のアイコン、丸ボタン内の
+  グリフ等)は、目に見える中央を優先して1〜2pxの手動調整を許可する。
+  その場合はコメントで光学調整であることを明記する。
+- 大文字のみの見出し・小さいラベルには letter-spacing: 0.02〜0.05em を検討する。
+
+■ ブランドの署名(引き算の例外)
+- 全体を節制した上で、このサービスらしさを感じさせるディテールを1箇所だけ
+  意図的に磨き込む(候補を提案し、承認を得てから実装する)。
+  それ以外の箇所での装飾的な自己主張は引き続き禁止する。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ デザインシステムの構築(最初に行う)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+画面を直す前に、まずデザインの「語彙」をCSSカスタムプロパティとして定義する。
+個別画面のCSSに生の値(magic number)を書くことを禁止し、すべてトークンを参照させる。
+
+:root に定義するもの:
+- カラー: --color-text / --color-text-secondary / --color-text-muted /
+  --color-bg / --color-bg-subtle / --color-border / --color-accent と、
+  そのhover・活性状態。既存のブランドカラーから導出すること。
+- スペーシング: --space-1 〜 --space-8 (4pxまたは8px基準のスケール)
+- タイポグラフィ: --text-sm / --text-base / --text-lg / --text-xl / --text-2xl と
+  対応するline-height
+- 形状: --radius-sm / --radius-md / --radius-lg、--shadow-sm / --shadow-md
+- レイアウト: --container-max(コンテンツ最大幅)、--content-max(本文最大幅)
+
+そのうえで共通コンポーネント(ボタン、カード、入力欄、ラベル等)のクラスを
+1箇所に定義し、各画面はそれを使う。同じUIパターンのCSSを2回書いたら
+コンポーネント化を怠ったとみなす。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ HTML/CSSの実装規律
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- セマンティックなHTML: div の羅列ではなく header / nav / main / section /
+  article / footer と h1〜h3 の正しい階層で構造を表現する。
+  文書構造を読み上げただけでページの構成が分かる状態にする。
+- レイアウトは Flexbox / Grid で組む。position: absolute や負のmarginによる
+  つじつま合わせを禁止。要素間の間隔は margin の応酬ではなく gap で表現する。
+- レスポンシブ: 固定幅(px指定のwidth)を避け、max-width と % / fr で組む。
+  ブレークポイントは必要最小限(1〜2個)にし、コンテンツが破綻する点にだけ置く。
+- 状態の設計: すべてのインタラクティブ要素に hover / focus-visible /
+  active / disabled の状態を定義する。focus時のリングを消さない。
+- 画像・メディア: aspect-ratio で領域を先に確保し、レイアウトシフトを起こさない。
+
+■ アイコンの規律
+- SVGインラインまたは単一のアイコンセット(例: Lucide、Heroicons)に統一し、
+  複数セットの混在・絵文字のUI利用を禁止する。
+- サイズは 16 / 20 / 24px の3種のみ。隣接するテキストサイズに応じて選ぶ。
+- 色は fill / stroke に currentColor を指定し、テキストと同じ色を継承させる。
+- テキストとの並びは inline-flex + align-items: center + gap(--space-1〜2)で
+  揃える。vertical-align や手動の margin-top 調整を禁止。
+- 装飾的なアイコンには aria-hidden="true"、アイコンのみのボタンには
+  aria-label を必ず付ける。
+- 「とりあえず置くアイコン」を禁止する。ラベル文字列だけで伝わる箇所に
+  アイコンを足さない。迷ったら置かない。
+
+■ 状態のデザイン
+- すべての動的な領域について「空・ロード中・エラー・正常」の4状態を設計する。
+- 空状態: 空白のまま放置せず、状況の説明と次に取るべきアクションを1つ示す。
+- ロード中: スピナーではなくスケルトンを基本とし、完成後と同じ寸法で領域を
+  確保してレイアウトシフトを起こさない。
+- エラー: 原因と回復手段を平易な言葉で示す。
+
+■ モーションと知覚パフォーマンス
+- トランジションは「状態が変わったことを伝える」目的にのみ使う。装飾目的の
+  アニメーションは追加しない。時間は150〜250ms、easeはease-out基本、
+  対象は transform / opacity / color のみ。
+- prefers-reduced-motion: reduce 時にはアニメーションを無効化する。
+- 初回表示で最重要コンテンツが最初に描画される構造にする(重い画像や
+  サードパーティの読み込みがコンテンツ表示をブロックしない)。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ 作業手順
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. 現状監査: 既存のHTML/CSSとデザインを上記原則に照らして監査し、
+   問題点を重要度順に列挙する(生の値の散乱、階層の崩れ、非一貫な部品など)
+2. トークン設計: 既存デザインから抽出したデザイントークン一式と
+   共通コンポーネントの一覧を提示する
+3. 基準画面の選定: サービスを代表する画面を1つ選び、その画面だけを
+   徹底的に磨く計画を示す。ここまでを提示し、私の承認を得る。
+4. 基準画面の実装: トークン定義 → 共通コンポーネント → 基準画面の順に実装する
+5. 自己批評ループ: 実装した画面のスクリーンショットを自分で撮り、
+   本プロンプトの原則すべてに照らして自己批評し、問題があれば修正して
+   再度スクリーンショットで確認する。合格と判断できるまで繰り返す。
+6. 基準の確定: 基準画面のbefore/afterを提示し、私の承認を得る。
+   この画面が以降すべての画面の品質基準となる。
+7. 横展開: 残りの画面を「基準画面と同じ水準・同じ語彙で」1画面ずつ適用する。
+   各画面で手順5の自己批評ループを行う。新しいトークンやコンポーネントが
+   必要になった場合は、追加する前に理由とともに提示する。
+8. 報告: 全体のbefore/after比較と、適用した原則の対応表を示す。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+■ 自己検証(各画面の完了前に必ず行う)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- CSS内に生の色コード・場当たりなpx値が残っていないか(トークン参照率100%か。
+  光学調整としてコメント付きで明記した箇所のみ例外)
+- ビューポート幅 375px / 768px / 1280px でスクリーンショットを撮り、
+  どの幅でもレイアウトが破綻していないか
+- 実データでのストレステスト: 極端に長いテキスト(改行なしの長い名前・URL)、
+  0件、大量件数(100件以上)を流し込み、切り詰め・折り返し・スクロールが
+  設計通りか。日付・数値・金額の桁が最大のケースで表組みが崩れないか。
+- 目を細めて見たとき(またはスクリーンショットを縮小して見たとき)、
+  視覚的階層とグルーピングが保たれているか
+- キーボードのTabだけで全操作が可能で、フォーカス位置が常に見えるか
+- 要素を1つ隠してもレイアウトが崩れず成立するか(余白設計が体系的か)
+- 「初見のユーザーが3秒で何のページか分かるか」に自信を持ってYesと言えるか</pre>
+</main>
+<script>
+  const pre = document.getElementById('prompt');
+  const btn = document.getElementById('copy');
+  const meta = document.getElementById('meta');
+  meta.textContent = pre.textContent.length.toLocaleString() + ' 文字';
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(pre.textContent);
+      btn.textContent = 'コピーしました ✓';
+    } catch {
+      btn.textContent = 'コピーできませんでした';
+    }
+    setTimeout(() => { btn.textContent = 'プロンプトをコピー'; }, 2000);
+  });
+</script>
+</body>
+</html>
